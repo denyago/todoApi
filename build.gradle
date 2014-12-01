@@ -27,6 +27,7 @@ repositories {
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
     testCompile group: 'junit', name: 'junit', version: '4.11'
+    testCompile group: 'org.springframework', name: 'spring-test'
 }
 
 idea {
@@ -36,8 +37,6 @@ idea {
     }
 }
 
-task hello {
-    doLast {
-        println 'Hello world!'
-    }
+test {
+    include 'src/test/java/todoApp/**'
 }
