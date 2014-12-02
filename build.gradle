@@ -36,7 +36,3 @@ idea {
         outputDir = file("$buildDir/classes/main/")
     }
 }
-
-test {
-    include 'src/test/java/todoApp/**'
-}
