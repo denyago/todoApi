@@ -1,43 +1,37 @@
 package todoApp;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
 
-import static org.junit.Assert.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
+@WebAppConfiguration
 public class TasksApiTest {
 
-    private MockRestServiceServer mockServer;
+    private MockMvc mockServer;
 
     @Autowired
-    private RestTemplate restTemplete;
+    private WebApplicationContext webApplicationContext;
 
-    @org.junit.Before
-    public void setUp() throws Exception {
-        this.mockServer = MockRestServiceServer.createServer(restTemplete);
-    }
-
-    @org.junit.After
-    public void tearDown() throws Exception {
-
+    @Before
+    public void setup() throws Exception {
+        this.mockServer = webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
-    public void testEmptyTasksList(){
-        this.mockServer.expect(requestTo("/api/tasks.json"))
-        .andExpect(method(HttpMethod.GET))
-        .andRespond(withSuccess("{}", MediaType.APPLICATION_JSON));
+    public void testEmptyTasksList() throws Exception {
+        mockServer.perform(get("/api/tasks.json"))
+                  .andExpect(status().isOk());
     }
 }
